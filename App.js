@@ -13,6 +13,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
+import MoviesDetails from "./screens/MoviesDetails";
+
 const Stack = createStackNavigator();
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="MoviesDetails" component={MoviesDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );
