@@ -12,7 +12,9 @@ import {
 import { getImageFromApi, getFilmDetailFromApi } from "../API/TMDBApi";
 
 export default function MoviesDetails(props) {
-  const filmId = props.route.params.film.id;
+  const filmId =
+    props.route.params
+      .filmId; /* 4 on récupère l'id du film qui a été envoyé en params depuis Search */
   const [film, setFilm] = useState(null);
   useEffect(() => {
     getFilmDetailFromApi(filmId)

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import FilmItem from "./FilmItem";
 import { getFilmsFromApiWithSearchedText } from "../API/TMDBApi";
+import { ThemeProvider } from "@react-navigation/native";
 
 class Search extends React.Component {
   constructor(props) {
@@ -66,6 +67,12 @@ class Search extends React.Component {
     }
   }
 
+  _displayDetailForFilm = (film) => {
+    //console.log(idFilm);
+    /* 3 */
+    this.props.navigation.navigate("MoviesDetails", { filmId: film.id });
+  };
+
   render() {
     return (
       <View style={styles.main_container}>
@@ -80,7 +87,12 @@ class Search extends React.Component {
           data={this.state.films}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <FilmItem film={item} navigation={this.props.navigation} />
+            <FilmItem
+              film={item}
+              displayDetailForFilm={
+                () => this._displayDetailForFilm(item) /* 2 */
+              }
+            />
           )}
           onEndReachedThreshold={0.5}
           onEndReached={() => {
@@ -98,7 +110,6 @@ class Search extends React.Component {
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
-    marginTop: 20,
   },
   textinput: {
     marginLeft: 5,
