@@ -67,9 +67,7 @@ class Search extends React.Component {
     }
   }
 
-  _displayDetailForFilm = (film) => {
-    //console.log(idFilm);
-    /* 3 */
+  _displayDetailsForFilm = (film) => {
     this.props.navigation.navigate("MoviesDetails", { filmId: film.id });
   };
 
@@ -89,9 +87,7 @@ class Search extends React.Component {
           renderItem={({ item }) => (
             <FilmItem
               film={item}
-              displayDetailForFilm={
-                () => this._displayDetailForFilm(item) /* 2 */
-              }
+              displayDetailsForFilm={() => this._displayDetailsForFilm(item)}
             />
           )}
           onEndReachedThreshold={0.5}

@@ -10,11 +10,11 @@ import {
   Image,
 } from "react-native";
 import { getImageFromApi, getFilmDetailFromApi } from "../API/TMDBApi";
+import { BaseRouter } from "@react-navigation/native";
+import { connect } from "react-redux";
 
-export default function MoviesDetails(props) {
-  const filmId =
-    props.route.params
-      .filmId; /* 4 on récupère l'id du film qui a été envoyé en params depuis Search */
+function MoviesDetails(props) {
+  const filmId = props.route.params.filmId;
   const [film, setFilm] = useState(null);
   useEffect(() => {
     getFilmDetailFromApi(filmId)
@@ -24,6 +24,21 @@ export default function MoviesDetails(props) {
       })
       .catch((error) => console.error(error));
   }, []);
+  console.log(props);
+
+  componentDidUpdate = () => {
+    console.log("componentDidUpdate : ");
+    console.log(props.favoritesFilm);
+  };
+
+  //action
+
+  _toggleFavorite = () => {
+    //on teste le changement pout rfc
+    const action = { type: "TOGGLE_FAVORITE", value: film };
+    props.dispatch(action); // voir si utile
+  };
+
   return (
     <View style={styles.container}>
       {film ? (
@@ -32,6 +47,10 @@ export default function MoviesDetails(props) {
             style={styles.image}
             source={{ uri: getImageFromApi(film.poster_path) }}
           />
+          <View>
+            <Text>{film.title}</Text>
+          </View>
+          <Button title="Favoris" onPress={() => this._toggleFavorite()} />
           <View>
             <Text>{film.overview}</Text>
           </View>
@@ -71,3 +90,9 @@ const styles = StyleSheet.create({
     height: 200,
   },
 });
+
+const mapStateToProps = (state) => {
+  return { favoritesFilm: state.favoritesFilm };
+};
+
+export default connect(mapStateToProps)(MoviesDetails);

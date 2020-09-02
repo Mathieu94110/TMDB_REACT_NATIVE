@@ -8,11 +8,12 @@ class FilmItem extends React.Component {
     super(props);
   }
   render() {
-    const { film, displayDetailForFilm } = this.props;
+    const { film, displayDetailsForFilm } = this.props;
+
     return (
       <TouchableOpacity
         style={styles.main_container}
-        onPress={() => displayDetailForFilm() /* 1 On clique dessus */}
+        onPress={() => displayDetailsForFilm()}
       >
         <Image
           style={styles.image}
