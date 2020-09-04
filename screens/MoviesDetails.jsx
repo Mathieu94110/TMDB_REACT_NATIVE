@@ -56,7 +56,7 @@ class MoviesDetails extends React.Component {
       // Film dans nos favoris
       sourceImage = require("./images/ic_favorite.png");
     }
-    return <Image style={styles.favorite_image} source={sourceImage} />;
+    return <Image style={styles.logo} source={sourceImage} />;
   }
   render() {
     return (
