@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { getImageFromApi } from "../API/TMDBApi";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Card, ListItem, Button, Icon } from "react-native-elements";
 
 class FilmItem extends React.Component {
   constructor(props) {
@@ -20,33 +21,30 @@ class FilmItem extends React.Component {
   }
 
   render() {
-    const { film, displayDetailsForFilm } = this.props;
+    const { film, displayDetailForFilm } = this.props;
 
     return (
-      <TouchableOpacity
-        style={styles.main_container}
-        onPress={() => displayDetailsForFilm()}
-      >
-        <Image
-          style={styles.image}
+      <Card>
+        <Card.Title>{film.title}</Card.Title>
+        <Card.Divider />
+        <Card.Image
           source={{ uri: getImageFromApi(film.poster_path) }}
-        />
+        ></Card.Image>
         <View style={styles.content_container}>
           <View style={styles.header_container}>
             {this._displayFavoriteImage()}
-            <Text style={styles.title_text}>{film.title}</Text>
             <Text style={styles.vote_text}>{film.vote_average}</Text>
           </View>
           <View style={styles.description_container}>
             <Text style={styles.description_text} numberOfLines={6}>
-              {film.overview}
+              Synopsis :{film.overview}
             </Text>
           </View>
           <View style={styles.date_container}>
             <Text style={styles.date_text}>Sorti le {film.release_date}</Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </Card>
     );
   }
 }
@@ -81,6 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 26,
     color: "#666666",
+    alignSelf: "center",
   },
   description_container: {
     flex: 7,

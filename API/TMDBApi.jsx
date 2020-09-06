@@ -23,5 +23,5 @@ export function getFilmDetailFromApi(id) {
       "?api_key=" +
       API_TOKEN +
       "&language=fr"
-  );
+  ).then((res) => res.json());
 }

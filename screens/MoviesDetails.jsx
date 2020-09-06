@@ -12,28 +12,49 @@ import {
 import { getImageFromApi, getFilmDetailFromApi } from "../API/TMDBApi";
 
 import { connect } from "react-redux";
+import { AirbnbRating } from "react-native-ratings";
 
 class MoviesDetails extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       film: undefined,
       isLoading: true,
     };
   }
   componentDidMount() {
-    const filmId = this.props.route.params.filmId;
-    getFilmDetailFromApi(filmId)
-      .then((response) => response.json())
-      .then((response) => {
-        this.setState({
-          film: response,
-          isLoading: false,
-        });
-      })
-      .catch((error) => console.error(error));
+    const favoriteFilmIndex = this.props.favoritesFilm.findIndex(
+      (item) => item.id === this.props.route.params.idFilm
+    );
+    if (favoriteFilmIndex !== -1) {
+      // Film déjà dans nos favoris, on a déjà son détail
+      // Pas besoin d'appeler l'API ici, on ajoute le détail stocké dans notre state global au state de notre component
+      this.setState({
+        film: this.props.favoritesFilm[favoriteFilmIndex],
+      });
+      return;
+    }
+    // Le film n'est pas dans nos favoris, on n'a pas son détail
+    // On appelle l'API pour récupérer son détail
+    this.setState({ isLoading: true });
+    getFilmDetailFromApi(this.props.route.params.idFilm).then((data) => {
+      this.setState({
+        film: data,
+        isLoading: false,
+      });
+    });
   }
 
+  _displayLoading() {
+    if (this.state.isLoading) {
+      return (
+        <View style={styles.loading_container}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    }
+  }
   componentDidUpdate = () => {
     console.log("componentDidUpdate : ");
     console.log(this.props.favoritesFilm);
@@ -58,41 +79,65 @@ class MoviesDetails extends React.Component {
     }
     return <Image style={styles.logo} source={sourceImage} />;
   }
+
   render() {
+    const { film } = this.state;
     return (
       <View style={styles.container}>
         {this.state.film ? (
           <View>
             <Image
               style={styles.image}
-              source={{ uri: getImageFromApi(this.state.film.poster_path) }}
+              source={{ uri: getImageFromApi(film.backdrop_path) }}
             />
             <View>
-              <Text>{this.state.film.title}</Text>
+              <Text>{film.title}</Text>
             </View>
+            <View style={styles.appreciation}>
+              <TouchableOpacity
+                style={styles.logo_container}
+                onPress={() => this._toggleFavorite()}
+              >
+                {this._displayFavoriteImage()}
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.logo_container}
-              onPress={() => this._toggleFavorite()}
-            >
-              {this._displayFavoriteImage()}
-            </TouchableOpacity>
-            <View>
-              <Text>{this.state.film.overview}</Text>
+              <AirbnbRating
+                style={styles.logo_container}
+                count={5}
+                reviews={[
+                  "Terrible",
+                  "Bad",
+                  "Meh",
+                  "OK",
+                  "Good",
+                  "Hmm...",
+                  "Very Good",
+                  "Wow",
+                  "Amazing",
+                  "Unbelievable",
+                  "Jesus",
+                ]}
+                defaultRating={11}
+                size={20}
+              />
             </View>
             <View>
-              <Text>{this.state.film.release_date}</Text>
+              <Text>{film.overview}</Text>
             </View>
             <View>
-              <Text>{this.state.film.vote_average}</Text>
+              <Text>{film.release_date}</Text>
             </View>
             <View>
-              <Text>{this.state.film.buget}</Text>
+              <Text>{film.vote_average}</Text>
             </View>
             <View>
-              {this.state.film.production_companies.map((company, index) => (
-                <Text key={index}>{company.name}</Text>
-              ))}
+              <Text>{film.buget}</Text>
+            </View>
+            <View>
+              {film.production_companies &&
+                film.production_companies.map((company, index) => (
+                  <Text key={index}>{company.name}</Text>
+                ))}
             </View>
           </View>
         ) : (
@@ -117,10 +162,15 @@ const styles = StyleSheet.create({
   },
   logo_container: {
     alignItems: "center",
+    flex: 1,
   },
   logo: {
     width: 40,
     height: 40,
+  },
+  appreciation: {
+    flexDirection: "row",
+    flex: 1,
   },
 });
 

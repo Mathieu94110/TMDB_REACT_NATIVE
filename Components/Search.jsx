@@ -12,7 +12,8 @@ import FilmItem from "./FilmItem";
 import { getFilmsFromApiWithSearchedText } from "../API/TMDBApi";
 import { ThemeProvider } from "@react-navigation/native";
 import { connect } from "react-redux";
-
+import FilmList from "./FilmList";
+import { Header } from "react-native-elements";
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +24,7 @@ class Search extends React.Component {
       films: [],
       isLoading: false,
     };
+    this._loadFilms = this._loadFilms.bind(this);
   }
 
   _loadFilms() {
@@ -30,6 +32,7 @@ class Search extends React.Component {
       this.setState({ isLoading: true });
       getFilmsFromApiWithSearchedText(this.searchedText, this.page + 1).then(
         (data) => {
+          console.log("DATA FILMS", data);
           this.page = data.page;
           this.totalPages = data.total_pages;
           this.setState({
@@ -68,13 +71,16 @@ class Search extends React.Component {
     }
   }
 
-  _displayDetailsForFilm = (film) => {
-    this.props.navigation.navigate("MoviesDetails", { filmId: film.id });
-  };
-
   render() {
     return (
       <View style={styles.main_container}>
+        <Header
+          placement="center"
+          centerComponent={{
+            text: "My Movies Application",
+            style: { color: "#fff" },
+          }}
+        />
         <TextInput
           style={styles.textinput}
           placeholder="Titre du film"
@@ -82,29 +88,13 @@ class Search extends React.Component {
           onSubmitEditing={() => this._searchFilms()}
         />
         <Button title="Rechercher" onPress={() => this._searchFilms()} />
-        <FlatList
-          data={this.state.films}
-          extraData={this.props.favoritesFilm}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <FilmItem
-              film={item}
-              isFilmFavorite={
-                this.props.favoritesFilm.findIndex(
-                  (film) => film.id === item.id
-                ) !== -1
-                  ? true
-                  : false
-              }
-              displayDetailsForFilm={() => this._displayDetailsForFilm(item)}
-            />
-          )}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (this.page < this.totalPages) {
-              this._loadFilms();
-            }
-          }}
+        <FilmList
+          films={this.state.films}
+          navigation={this.props.navigation}
+          loadFilms={this._loadFilms}
+          page={this.page}
+          totalPages={this.totalPages}
+          favoriteList={false} // Ici j'ai simplement ajouté un booléen à false pour indiquer qu'on n'est pas dans le cas de l'affichage de la liste des films favoris. Et ainsi pouvoir déclencher le chargement de plus de films lorsque l'utilisateur scrolle.
         />
         {this._displayLoading()}
       </View>
@@ -135,10 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    favoritesFilm: state.favoritesFilm,
-  };
-};
-
-export default connect(mapStateToProps)(Search);
+export default Search;
