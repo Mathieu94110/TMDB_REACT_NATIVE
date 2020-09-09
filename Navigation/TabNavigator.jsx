@@ -8,8 +8,12 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Search" initialRouteName="Search" component={Search} />
-      <Tab.Screen name="Favorites" component={Favorites} />
+      <Tab.Screen
+        name="Rechercher"
+        initialRouteName="Search"
+        component={Search}
+      />
+      <Tab.Screen name="Favoris" component={Favorites} />
     </Tab.Navigator>
   );
 }

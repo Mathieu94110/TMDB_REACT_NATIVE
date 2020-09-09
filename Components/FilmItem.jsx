@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { getImageFromApi } from "../API/TMDBApi";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Card, ListItem, Button, Icon } from "react-native-elements";
 
 class FilmItem extends React.Component {
   constructor(props) {
@@ -24,41 +23,59 @@ class FilmItem extends React.Component {
     const { film, displayDetailForFilm } = this.props;
 
     return (
-      <Card>
-        <Card.Title>{film.title}</Card.Title>
-        <Card.Divider />
-        <Card.Image
-          source={{ uri: getImageFromApi(film.poster_path) }}
-        ></Card.Image>
-        <View style={styles.content_container}>
-          <View style={styles.header_container}>
-            {this._displayFavoriteImage()}
-            <Text style={styles.vote_text}>{film.vote_average}</Text>
-          </View>
-          <View style={styles.description_container}>
-            <Text style={styles.description_text} numberOfLines={6}>
-              Synopsis :{film.overview}
-            </Text>
-          </View>
-          <View style={styles.date_container}>
-            <Text style={styles.date_text}>Sorti le {film.release_date}</Text>
+      <TouchableOpacity onPress={() => displayDetailForFilm(film.id)}>
+        <View style={styles.card}>
+          <View style={styles.main_container}>
+            <Image
+              source={{ uri: getImageFromApi(film.poster_path) }}
+              style={styles.image}
+            />
+            <View style={styles.content_container}>
+              <View style={styles.header_container}>
+                <Text style={styles.title_text}>{film.title}</Text>
+
+                {this._displayFavoriteImage()}
+                <Text style={styles.vote_text}>{film.vote_average}</Text>
+              </View>
+
+              <View style={styles.description_container}>
+                <Text style={styles.description_text} numberOfLines={6}>
+                  {film.overview}
+                </Text>
+              </View>
+              <View style={styles.date_container}>
+                <Text style={styles.date_text}>
+                  Sorti le {film.release_date.split("-").reverse().join("/")}
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
-      </Card>
+      </TouchableOpacity>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  card: {
+    borderColor: "black",
+
+    borderWidth: 1,
+  },
   main_container: {
     height: 190,
+
     flexDirection: "row",
+    margin: 10,
   },
   image: {
     width: 120,
     height: 180,
     margin: 5,
-    backgroundColor: "gray",
+  },
+  favorite_image: {
+    height: 40,
+    width: 40,
   },
   content_container: {
     flex: 1,
@@ -79,7 +96,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 26,
     color: "#666666",
-    alignSelf: "center",
   },
   description_container: {
     flex: 7,
@@ -94,11 +110,6 @@ const styles = StyleSheet.create({
   date_text: {
     textAlign: "right",
     fontSize: 14,
-  },
-  favorite_image: {
-    width: 25,
-    height: 25,
-    marginRight: 5,
   },
 });
 

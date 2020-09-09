@@ -74,13 +74,6 @@ class Search extends React.Component {
   render() {
     return (
       <View style={styles.main_container}>
-        <Header
-          placement="center"
-          centerComponent={{
-            text: "My Movies Application",
-            style: { color: "#fff" },
-          }}
-        />
         <TextInput
           style={styles.textinput}
           placeholder="Titre du film"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
+  ScrollView,
   View,
   Button,
   Text,
@@ -83,15 +84,15 @@ class MoviesDetails extends React.Component {
   render() {
     const { film } = this.state;
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.main_container}>
         {this.state.film ? (
-          <View>
+          <View style={styles.main_container}>
             <Image
               style={styles.image}
               source={{ uri: getImageFromApi(film.backdrop_path) }}
             />
             <View>
-              <Text>{film.title}</Text>
+              <Text style={styles.title_text}>{film.title}</Text>
             </View>
             <View style={styles.appreciation}>
               <TouchableOpacity
@@ -104,40 +105,35 @@ class MoviesDetails extends React.Component {
               <AirbnbRating
                 style={styles.logo_container}
                 count={5}
-                reviews={[
-                  "Terrible",
-                  "Bad",
-                  "Meh",
-                  "OK",
-                  "Good",
-                  "Hmm...",
-                  "Very Good",
-                  "Wow",
-                  "Amazing",
-                  "Unbelievable",
-                  "Jesus",
-                ]}
-                defaultRating={11}
+                reviews={["Nul", "Pas terrible", "Moyen", "Bien", "Excellent"]}
+                defaultRating={5}
                 size={20}
               />
             </View>
             <View>
-              <Text>{film.overview}</Text>
+              <Text style={styles.secondary_titles}>Synopsis:</Text>
+              <Text style={styles.overview}>{film.overview}</Text>
             </View>
-            <View>
-              <Text>{film.release_date}</Text>
-            </View>
-            <View>
-              <Text>{film.vote_average}</Text>
-            </View>
-            <View>
-              <Text>{film.buget}</Text>
-            </View>
-            <View>
-              {film.production_companies &&
-                film.production_companies.map((company, index) => (
-                  <Text key={index}>{company.name}</Text>
-                ))}
+            <View style={styles.details}>
+              <View>
+                <Text style={styles.secondary_titles}>Date de sortie :</Text>
+                <Text> {film.release_date.split("-").reverse().join("/")}</Text>
+              </View>
+              <View>
+                <Text style={styles.secondary_titles}>Note du public:</Text>
+                <Text> {film.vote_average}/10</Text>
+              </View>
+              <View>
+                <Text style={styles.secondary_titles}>Budget:</Text>
+                <Text>{film.budget} $</Text>
+              </View>
+              <View>
+                <Text style={styles.secondary_titles}>Production: </Text>
+                {film.production_companies &&
+                  film.production_companies.map((company, index) => (
+                    <Text key={index}>{company.name}</Text>
+                  ))}
+              </View>
             </View>
           </View>
         ) : (
@@ -145,12 +141,25 @@ class MoviesDetails extends React.Component {
             <Text>Chargement en cours</Text>
           </View>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  main_container: {
+    flex: 1,
+    margin: 5,
+    fontStyle: "italic",
+  },
+  title_text: {
+    fontWeight: "bold",
+    fontSize: 35,
+
+    flexWrap: "wrap",
+    color: "#000000",
+    textAlign: "center",
+  },
   container: {
     margin: 10,
     flexDirection: "column",
@@ -160,17 +169,35 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
   },
-  logo_container: {
-    alignItems: "center",
-    flex: 1,
-  },
+  logo_container: {},
   logo: {
     width: 40,
     height: 40,
   },
   appreciation: {
     flexDirection: "row",
-    flex: 1,
+    marginBottom: 15,
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+
+  overview: {
+    color: "#666666",
+  },
+  details: {
+    color: "#666666",
+    fontStyle: "italic",
+    height: 200,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+
+  secondary_titles: {
+    fontWeight: "bold",
+    fontSize: 20,
+    marginBottom: 10,
+    marginTop: 10,
   },
 });
 
