@@ -2,6 +2,7 @@ import React from "react";
 import {
   StyleSheet,
   View,
+  SafeAreaView,
   TextInput,
   Button,
   Text,
@@ -98,6 +99,7 @@ class Search extends React.Component {
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
+    marginTop: 20,
   },
   textinput: {
     marginLeft: 5,
