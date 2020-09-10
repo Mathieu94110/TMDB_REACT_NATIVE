@@ -15,7 +15,7 @@ import { getImageFromApi, getFilmDetailFromApi } from "../API/TMDBApi";
 
 import { connect } from "react-redux";
 import { AirbnbRating } from "react-native-ratings";
-
+import EnlargeShrink from "../Animations/EnlargeShrink";
 class MoviesDetails extends React.Component {
   constructor(props) {
     super(props);
@@ -82,6 +82,7 @@ class MoviesDetails extends React.Component {
 
   _displayFavoriteImage() {
     var sourceImage = require("./images/ic_favorite_border.png");
+    var shouldEnlarge = false;
     if (
       this.props.favoritesFilm.findIndex(
         (item) => item.id === this.state.film.id
@@ -89,8 +90,14 @@ class MoviesDetails extends React.Component {
     ) {
       // Film dans nos favoris
       sourceImage = require("./images/ic_favorite.png");
+      shouldEnlarge = true;
     }
-    return <Image style={styles.logo} source={sourceImage} />;
+
+    return (
+      <EnlargeShrink shouldEnlarge={shoulEnlarge}>
+        <Image style={styles.logo} source={sourceImage} />;
+      </EnlargeShrink>
+    );
   }
 
   _shareFilm() {
